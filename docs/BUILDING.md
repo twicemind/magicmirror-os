@@ -386,7 +386,7 @@ sudo rm -rf /tmp/pi-gen-*
 **Lösung**:
 ```bash
 # QEMU neu installieren
-sudo apt-get install --reinstall qemu-user-static
+sudo apt-get install --reinstall qemu-user-binfmt
 
 # Binfmt Registrierung prüfen
 update-binfmts --display

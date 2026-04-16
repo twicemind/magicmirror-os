@@ -111,7 +111,7 @@ check_prerequisites() {
     local required_tools=(
         "git"
         "debootstrap"
-        "qemu-user-static"
+        "qemu-user-binfmt"
         "parted"
         "kpartx"
     )
