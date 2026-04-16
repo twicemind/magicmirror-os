@@ -1,0 +1,141 @@
+# MagicMirror OS - Build Configuration
+# 
+# Diese Datei wird von build.sh geladen und an pi-gen übergeben
+# Siehe: https://github.com/RPi-Distro/pi-gen
+
+# ===================================================================
+# IMAGE CONFIGURATION
+# ===================================================================
+
+# Name des Output-Images
+IMG_NAME="magicmirror-os"
+
+# Raspberry Pi OS Release
+# - bookworm: Debian 12 (aktuell, empfohlen)
+# - bullseye: Debian 11
+RELEASE="bookworm"
+
+# Architektur
+# - arm64: 64-Bit (empfohlen für Pi 3/4/5)
+# - armhf: 32-Bit (für Kompatibilität)
+ARCH="arm64"
+
+# ===================================================================
+# SYSTEM CONFIGURATION
+# ===================================================================
+
+# Hostname
+TARGET_HOSTNAME="magicmirror"
+
+# Locale und Keyboard
+LOCALE_DEFAULT="de_DE.UTF-8"
+KEYBOARD_KEYMAP="de"
+KEYBOARD_LAYOUT="German"
+TIMEZONE_DEFAULT="Europe/Berlin"
+
+# ===================================================================
+# DEPLOYMENT
+# ===================================================================
+
+# Image nach Build komprimieren
+# 0 = Nein, 1 = Ja
+DEPLOY_ZIP=1
+
+# Kompression
+# - zip: Schnell, Windows-kompatibel
+# - xz:  Beste Kompression, langsam
+# - gz:  Gute Balance
+DEPLOY_COMPRESSION="xz"
+
+# ===================================================================
+# BUILD STAGES
+# ===================================================================
+
+# Stage 0-2: Basis Raspberry Pi OS Lite (immer gebaut)
+# Stage 3: Desktop Environment
+# Stage 4: Recommended Software
+# Stage 5: Custom (für unsere Anpassungen reserviert)
+
+# Desktop überspringen (wir wollen Lite)
+SKIP_STAGE3=1
+
+# Recommended Software überspringen
+SKIP_STAGE4=1
+
+# Stage 5 nutzen wir später für MagicMirror
+SKIP_STAGE5=1
+
+# ===================================================================
+# FIRST BOOT CONFIGURATION
+# ===================================================================
+
+# Erster User (wird beim ersten Boot erstellt)
+# WICHTIG: Passwort sollte nach Installation geändert werden!
+FIRST_USER_NAME="mm"
+FIRST_USER_PASS="magicmirror"
+
+# SSH beim ersten Boot aktivieren
+# 0 = Deaktiviert, 1 = Aktiviert
+ENABLE_SSH=1
+
+# ===================================================================
+# NETWORK
+# ===================================================================
+
+# Disable predictable network interface names
+# (Verwendet eth0, wlan0 statt komplexer Namen)
+DISABLE_PREDICTABLE_NETWORK_NAMES=1
+
+# WiFi-Konfiguration für ersten Boot (optional)
+# Wenn gesetzt, verbindet sich der Pi automatisch mit diesem Netzwerk
+#WPA_SSID="YourWiFiSSID"
+#WPA_PASSWORD="YourWiFiPassword"
+#WPA_COUNTRY="DE"
+
+# ===================================================================
+# PERFORMANCE
+# ===================================================================
+
+# Parallele Builds (nutzt mehrere CPU-Cores)
+PARALLEL_BUILD=1
+
+# Image-Größe
+# - Leer: Automatische Größe
+# - Zahl: Größe in MB (z.B. 4096 für 4 GB)
+IMAGE_SIZE=""
+
+# ===================================================================
+# APT CONFIGURATION
+# ===================================================================
+
+# APT-Proxy für schnellere Downloads (optional)
+# Beispiel: "http://localhost:3142"
+# APT_PROXY=""
+
+# Extra Pakete die installiert werden sollen (durch Leerzeichen getrennt)
+# Diese werden in alle Stages installiert
+# EXTRA_PACKAGES="vim htop tmux"
+
+# ===================================================================
+# ADVANCED OPTIONS
+# ===================================================================
+
+# Kernel-Branch
+# - stable: Stable Kernel (empfohlen)
+# - rpi-X.XX.y: Spezifische Kernel-Version
+KERNEL_BRANCH="stable"
+
+# Cleanup nach Build
+# Entfernt temporäre Dateien aus dem Image
+CLEANUP=1
+
+# ===================================================================
+# DEBUGGING
+# ===================================================================
+
+# Verbose Output
+# 0 = Normal, 1 = Verbose
+# VERBOSE=0
+
+# Build-Logs behalten
+# PRESERVE_BUILD_LOGS=1

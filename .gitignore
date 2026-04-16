@@ -1,0 +1,64 @@
+# Build-Verzeichnisse
+work/
+deploy/
+pi-gen/
+
+# Logs
+*.log
+logs/
+
+# Images
+*.img
+*.img.xz
+*.img.zip
+*.img.gz
+*.iso
+
+# Checksums
+*.sha256
+*.md5
+
+# Docker
+Dockerfile.builder
+.dockerignore
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Backup files
+*.backup
+*.bak
+*.old
+
+# Test-Umgebungen
+test-images/
+qemu-test/
+
+# Build-Artefakte
+*.deb
+*.tar.gz
+*.tar.xz
+
+# Config-Backups
+config/*.backup
+config/*.bak
+
+# Runtime
+.cache/
