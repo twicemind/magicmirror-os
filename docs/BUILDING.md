@@ -41,9 +41,10 @@ sudo apt-get install -y \
     pigz \
     kpartx \
     binfmt-support \
-    qemu-user-binfmt \
     arch-test
 ```
+
+**Hinweis:** `qemu-user-static` und `qemu-user-binfmt` schließen sich gegenseitig aus. Wir verwenden `qemu-user-static` + `binfmt-support`.
 
 ## Methode 1: Nativer Build (Empfohlen auf Linux)
 
@@ -308,10 +309,11 @@ qemu-user-binfmt arch-test
 
 **Lösung:**
 ```bash
-# Installiere fehlende Pakete
-sudo apt-get install -y qemu-user-binfmt arch-test binfmt-support
+# Installiere fehlende Pakete (NICHT qemu-user-binfmt wenn qemu-user-static installiert ist!)
+sudo apt-get install -y arch-test binfmt-support
 
-# Registriere QEMU
+# Registriere QEMU binfmt
+sudo systemctl restart systemd-binfmt.service
 sudo update-binfmts --enable
 
 # Prüfe Registrierung
@@ -319,6 +321,16 @@ update-binfmts --display | grep qemu-aarch64
 
 # Erneut versuchen
 sudo ./build.sh --clean
+```
+
+### Problem: "qemu-user-binfmt conflicts with qemu-user-static"
+
+**Lösung:**
+```bash
+# Verwenden Sie NUR qemu-user-static, NICHT qemu-user-binfmt
+sudo apt-get install qemu-user-static binfmt-support arch-test
+
+# qemu-user-binfmt ist nicht notwendig und konfliktiert
 ```
 
 ### Problem: Build schlägt fehl mit "Permission denied"

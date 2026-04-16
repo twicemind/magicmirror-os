@@ -75,7 +75,6 @@ apt-get install -y \
     pigz \
     kpartx \
     binfmt-support \
-    qemu-user-binfmt \
     arch-test
 
 log_success "Alle Pakete installiert"
@@ -88,7 +87,9 @@ if [ -f /proc/sys/fs/binfmt_misc/qemu-aarch64 ]; then
     log_success "QEMU ARM64 bereits registriert"
 else
     log_info "Registriere QEMU ARM64..."
-    update-binfmts --enable qemu-aarch64 || true
+    # Restart systemd-binfmt service
+    systemctl restart systemd-binfmt.service 2>/dev/null || true
+    update-binfmts --enable 2>/dev/null || true
 fi
 
 # Test QEMU

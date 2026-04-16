@@ -58,10 +58,10 @@ jobs:
             pigz \
             kpartx \
             binfmt-support \
-            qemu-user-binfmt \
             arch-test
-          # Register QEMU
-          sudo update-binfmts --enable
+          # Register QEMU binfmt
+          sudo systemctl restart systemd-binfmt.service || true
+          sudo update-binfmts --enable || true
 
       - name: Build image
         run: |
