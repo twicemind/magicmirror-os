@@ -93,20 +93,21 @@ log_success "Alle Pakete installiert"
 log_info "Konfiguriere QEMU..."
 
 # Registriere ARM binaries mit binfmt
-if [ -f /proc/sys/fs/binfmt_misc/qemu-aarch64 ]; then
-    log_success "QEMU ARM64 bereits registriert"
-else
-    log_info "Registriere QEMU ARM64..."
-    # Restart systemd-binfmt service
-    systemctl restart systemd-binfmt.service 2>/dev/null || true
-    update-binfmts --enable 2>/dev/null || true
+systemctl restart systemd-binfmt.service 2>/dev/null || true
+update-binfmts --enable 2>/dev/null || true
+
+# Explicitly register aarch64 if not already registered
+if ! update-binfmts --display 2>/dev/null | grep -q qemu-aarch64; then
+    log_info "Registriere qemu-aarch64 manuell..."
+    update-binfmts --import qemu-aarch64 2>/dev/null || true
 fi
 
-# Test QEMU
-if qemu-aarch64-static --version &> /dev/null; then
-    log_success "QEMU funktioniert"
+# Verify registration
+if update-binfmts --display 2>/dev/null | grep -qE 'qemu-(aarch64|arm)'; then
+    log_success "QEMU ARM Emulation erfolgreich registriert"
 else
-    log_error "QEMU nicht funktionsfähig"
+    log_error "QEMU ARM Emulation nicht registriert"
+    log_info "Versuchen Sie: sudo systemctl restart systemd-binfmt.service"
     exit 1
 fi
 

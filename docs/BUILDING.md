@@ -325,14 +325,51 @@ sudo apt-get install -y qemu-user-binfmt binfmt-support arch-test
 sudo systemctl restart systemd-binfmt.service
 sudo update-binfmts --enable
 
+# Explizit aarch64 registrieren falls nötig
+if ! update-binfmts --display | grep -q qemu-aarch64; then
+    sudo update-binfmts --import qemu-aarch64
+fi
+
 # Prüfe Registrierung
-update-binfmts --display | grep qemu-aarch64
+update-binfmts --display | grep -E 'qemu-(aarch64|arm)'
 
 # Erneut versuchen
 sudo ./build.sh --clean
 ```
 
 **Hinweis:** Obwohl `qemu-user-static` funktional äquivalent ist, benötigt pi-gen spezifisch `qemu-user-binfmt` für seinen Dependency-Check.
+
+---
+
+### Problem: "Unable to execute target architecture" / debootstrap Fehler
+
+**Fehlermeldung:**
+```
+E: Unable to execute target architecture
+rmdir: failed to remove '.../rootfs/debootstrap': Directory not empty
+bootstrap failed
+```
+
+**Ursache:** QEMU binfmt-Handler sind nicht richtig registriert, obwohl das Paket installiert ist.
+
+**Lösung:**
+```bash
+# Registriere binfmt-Handler neu
+sudo systemctl restart systemd-binfmt.service
+sudo update-binfmts --enable
+
+# Prüfe ob ARM Emulation registriert ist
+update-binfmts --display | grep qemu-aarch64
+
+# Falls nicht registriert, manuell importieren
+sudo update-binfmts --import qemu-aarch64
+
+# Prüfe ob es funktioniert
+ls /proc/sys/fs/binfmt_misc/qemu-aarch64
+
+# Build neu versuchen
+sudo ./build.sh --clean
+```
 
 ### Problem: Build schlägt fehl mit "Permission denied"
 

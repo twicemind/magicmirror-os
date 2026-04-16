@@ -61,9 +61,21 @@ jobs:
           # Install qemu-user-binfmt (required by pi-gen) - remove qemu-user-static first if needed
           sudo apt-get remove -y qemu-user-static || true
           sudo apt-get install -y qemu-user-binfmt
-          # Register QEMU binfmt
-          sudo systemctl restart systemd-binfmt.service || true
-          sudo update-binfmts --enable || true
+          
+          # Register QEMU binfmt handlers
+          # GitHub Actions might not have systemd running properly, so we register manually
+          sudo systemctl restart systemd-binfmt.service 2>/dev/null || true
+          sudo update-binfmts --enable 2>/dev/null || true
+          
+          # Explicitly register aarch64 if not already registered
+          if ! update-binfmts --display | grep -q qemu-aarch64; then
+            echo "Manually registering qemu-aarch64..."
+            sudo update-binfmts --import qemu-aarch64 || true
+          fi
+          
+          # Verify registration
+          echo "Checking binfmt registration:"
+          update-binfmts --display | grep -E 'qemu-(aarch64|arm)' || echo "WARNING: ARM emulation might not be properly registered"
 
       - name: Build image
         run: |
