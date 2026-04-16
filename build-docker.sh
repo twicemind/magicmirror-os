@@ -113,11 +113,13 @@ RUN apt-get update && apt-get install -y \
     pigz \
     kpartx \
     binfmt-support \
+    qemu-user-binfmt \
+    arch-test \
     sudo \
     && rm -rf /var/lib/apt/lists/*
 
 # Setup QEMU
-RUN update-binfmts --enable qemu-aarch64 || true
+RUN update-binfmts --enable || true
 
 # Create work directory
 WORKDIR /build

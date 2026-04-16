@@ -74,7 +74,9 @@ apt-get install -y \
     gpg \
     pigz \
     kpartx \
-    binfmt-support
+    binfmt-support \
+    qemu-user-binfmt \
+    arch-test
 
 log_success "Alle Pakete installiert"
 

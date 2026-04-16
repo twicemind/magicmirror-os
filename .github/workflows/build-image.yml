@@ -37,12 +37,36 @@ jobs:
       - name: Setup build environment
         run: |
           sudo apt-get update
-          sudo ./scripts/setup-build-env.sh
+          sudo apt-get install -y \
+            git \
+            quilt \
+            parted \
+            qemu-user-static \
+            debootstrap \
+            zerofree \
+            zip \
+            dosfstools \
+            libarchive-tools \
+            libcap2-bin \
+            grep \
+            rsync \
+            xz-utils \
+            file \
+            curl \
+            bc \
+            gpg \
+            pigz \
+            kpartx \
+            binfmt-support \
+            qemu-user-binfmt \
+            arch-test
+          # Register QEMU
+          sudo update-binfmts --enable
 
       - name: Build image
         run: |
-          sudo ./build.sh
-        timeout-minutes: 120
+          sudo CLEANUP=1 ./build.sh
+        timeout-minutes: 180
 
       - name: Calculate checksums
         run: |

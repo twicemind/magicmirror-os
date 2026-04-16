@@ -35,11 +35,14 @@ sudo apt-get install -y \
     rsync \
     xz-utils \
     file \
-    git \
     curl \
     bc \
     gpg \
-    pigz
+    pigz \
+    kpartx \
+    binfmt-support \
+    qemu-user-binfmt \
+    arch-test
 ```
 
 ## Methode 1: Nativer Build (Empfohlen auf Linux)
@@ -293,6 +296,30 @@ CUSTOM_STAGES="stage-magicmirror stage-wifi-setup stage-custom"
 ```
 
 ## Troubleshooting
+
+### Problem: "Required dependencies not installed"
+
+**Fehlermeldung:**
+```
+Required dependencies not installed
+This can be resolved on Debian/Raspbian systems by installing:
+qemu-user-binfmt arch-test
+```
+
+**Lösung:**
+```bash
+# Installiere fehlende Pakete
+sudo apt-get install -y qemu-user-binfmt arch-test binfmt-support
+
+# Registriere QEMU
+sudo update-binfmts --enable
+
+# Prüfe Registrierung
+update-binfmts --display | grep qemu-aarch64
+
+# Erneut versuchen
+sudo ./build.sh --clean
+```
 
 ### Problem: Build schlägt fehl mit "Permission denied"
 
