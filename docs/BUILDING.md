@@ -24,7 +24,6 @@ sudo apt-get install -y \
     git \
     quilt \
     parted \
-    qemu-user-static \
     debootstrap \
     zerofree \
     zip \
@@ -42,9 +41,14 @@ sudo apt-get install -y \
     kpartx \
     binfmt-support \
     arch-test
+
+# pi-gen benötigt explizit qemu-user-binfmt
+# Falls qemu-user-static installiert ist, zuerst entfernen:
+sudo apt-get remove -y qemu-user-static || true
+sudo apt-get install -y qemu-user-binfmt
 ```
 
-**Hinweis:** `qemu-user-static` und `qemu-user-binfmt` schließen sich gegenseitig aus. Wir verwenden `qemu-user-static` + `binfmt-support`.
+**Wichtig:** pi-gen prüft explizit auf `qemu-user-binfmt`, daher muss dieses Paket installiert sein, auch wenn es mit `qemu-user-static` konfliktiert.
 
 ## Methode 1: Nativer Build (Empfohlen auf Linux)
 
@@ -298,19 +302,24 @@ CUSTOM_STAGES="stage-magicmirror stage-wifi-setup stage-custom"
 
 ## Troubleshooting
 
-### Problem: "Required dependencies not installed"
+### Problem: "Required dependencies not installed" - qemu-user-binfmt
 
 **Fehlermeldung:**
 ```
 Required dependencies not installed
 This can be resolved on Debian/Raspbian systems by installing:
-qemu-user-binfmt arch-test
+qemu-user-binfmt
 ```
+
+**Ursache:** pi-gen prüft explizit auf das Paket `qemu-user-binfmt`.
 
 **Lösung:**
 ```bash
-# Installiere fehlende Pakete (NICHT qemu-user-binfmt wenn qemu-user-static installiert ist!)
-sudo apt-get install -y arch-test binfmt-support
+# Entferne qemu-user-static (konfliktiert mit qemu-user-binfmt)
+sudo apt-get remove -y qemu-user-static || true
+
+# Installiere qemu-user-binfmt
+sudo apt-get install -y qemu-user-binfmt binfmt-support arch-test
 
 # Registriere QEMU binfmt
 sudo systemctl restart systemd-binfmt.service
@@ -323,15 +332,7 @@ update-binfmts --display | grep qemu-aarch64
 sudo ./build.sh --clean
 ```
 
-### Problem: "qemu-user-binfmt conflicts with qemu-user-static"
-
-**Lösung:**
-```bash
-# Verwenden Sie NUR qemu-user-static, NICHT qemu-user-binfmt
-sudo apt-get install qemu-user-static binfmt-support arch-test
-
-# qemu-user-binfmt ist nicht notwendig und konfliktiert
-```
+**Hinweis:** Obwohl `qemu-user-static` funktional äquivalent ist, benötigt pi-gen spezifisch `qemu-user-binfmt` für seinen Dependency-Check.
 
 ### Problem: Build schlägt fehl mit "Permission denied"
 

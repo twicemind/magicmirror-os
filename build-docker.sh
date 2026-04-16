@@ -96,7 +96,6 @@ RUN apt-get update && apt-get install -y \
     git \
     quilt \
     parted \
-    qemu-user-static \
     debootstrap \
     zerofree \
     zip \
@@ -114,11 +113,12 @@ RUN apt-get update && apt-get install -y \
     kpartx \
     binfmt-support \
     arch-test \
+    qemu-user-binfmt \
     sudo \
     && rm -rf /var/lib/apt/lists/*
 
 # Setup QEMU binfmt
-RUN systemctl restart systemd-binfmt || true && \
+RUN systemctl restart systemd-binfmt 2>/dev/null || true && \
     update-binfmts --enable || true
 
 # Create work directory

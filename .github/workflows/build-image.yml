@@ -41,7 +41,6 @@ jobs:
             git \
             quilt \
             parted \
-            qemu-user-static \
             debootstrap \
             zerofree \
             zip \
@@ -59,6 +58,9 @@ jobs:
             kpartx \
             binfmt-support \
             arch-test
+          # Install qemu-user-binfmt (required by pi-gen) - remove qemu-user-static first if needed
+          sudo apt-get remove -y qemu-user-static || true
+          sudo apt-get install -y qemu-user-binfmt
           # Register QEMU binfmt
           sudo systemctl restart systemd-binfmt.service || true
           sudo update-binfmts --enable || true

@@ -58,7 +58,6 @@ apt-get install -y \
     git \
     quilt \
     parted \
-    qemu-user-static \
     debootstrap \
     zerofree \
     zip \
@@ -76,6 +75,17 @@ apt-get install -y \
     kpartx \
     binfmt-support \
     arch-test
+
+log_success "Basis-Pakete installiert"
+
+# pi-gen benötigt spezifisch qemu-user-binfmt
+log_info "Installiere qemu-user-binfmt (erforderlich für pi-gen)..."
+
+# Entferne qemu-user-static falls vorhanden (konfliktiert mit qemu-user-binfmt)
+apt-get remove -y qemu-user-static 2>/dev/null || true
+
+# Installiere qemu-user-binfmt
+apt-get install -y qemu-user-binfmt
 
 log_success "Alle Pakete installiert"
 
